@@ -6,18 +6,20 @@ This repository contains the iOS SDK for the BlueTrace protocol.
 
 Using Swift Package Manager is the easiest way to install the SDK.
 
-1. Add Package Dependencies to your Xcode project.
+1. Go to Package Dependencies in your Xcode project.
 2. Enter the URL of this repository: https://github.com/hyperjumptech/hypertrace-ios-sdk
 
 ## App Requirements
 
-Your app needs to have Background Modes Capability enabled for the following modes:
+Your app needs to have [Background Modes Capability](https://developer.apple.com/documentation/xcode/configuring-background-execution-modes) enabled for the following modes:
 
 1. Uses Bluetooth LE accessories.
 2. Acts as a Bluetooth LE accessory.
 3. Remote notification.
 
 Please also add `Privacy - Bluetooth Peripheral Usage Description` and `Privacy - Bluetooth Always Usage Description` in the Info.plist.
+
+You also need to have a [Hypertrace server](https://github.com/hyperjumptech/hypertrace) running.
 
 ## Usage
 
@@ -49,7 +51,7 @@ HyperTrace.shared().upload(code: code) { [weak self] error in
 }
 ```
 
-For debugging purpose, you can observe the encounter logs by getting the NSFetchedResultsController instance.
+For debugging purpose, you can observe the encounter logs by getting the [NSFetchedResultsController](https://developer.apple.com/documentation/coredata/nsfetchedresultscontroller) instance.
 
 ```swift
 import HyperTraceSDK
@@ -81,3 +83,7 @@ class LogViewController: UITableViewController {
 ```
 
 For a working example, see the [HyperTrace Sample app](https://github.com/hyperjumptech/hypertrace-ios-sdk-sample).
+
+## License
+
+GNU General Public License v3.0
