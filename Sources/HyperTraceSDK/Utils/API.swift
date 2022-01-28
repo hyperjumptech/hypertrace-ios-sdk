@@ -15,10 +15,11 @@ enum APIPath: String {
   case uploadData
 }
 
-class API {
+class API: NSObject {
   private static var sharedAPI: API?
-  private let baseUrl: String
+  private var baseUrl: String = ""
   var uid: String = ""
+  var session: URLSession?
   
   static func shared(baseUrl: String = "http://localhost:3000/api") -> API {
     if sharedAPI == nil {
@@ -28,7 +29,11 @@ class API {
   }
   
   init (baseUrl: String) {
+    super.init()
     self.baseUrl = baseUrl
+    self.session = URLSession(configuration: URLSessionConfiguration.default,
+                              delegate: self,
+                              delegateQueue: nil)
   }
   
   func getHandshakePin(_ onComplete: ( (Error?, (String)?) -> Void)?) {
@@ -70,13 +75,13 @@ class API {
       onComplete?(APIError.encodingError(message: error.localizedDescription), nil)
     }
     
-    URLSession.shared.dataTask(with: urlRequest, completionHandler: { data, response, error in
+    self.session?.dataTask(with: urlRequest, completionHandler: { data, response, error in
       let anError = isError(error: error, data: data, response: response as? HTTPURLResponse)
       guard anError == nil else {
         onComplete?(anError, nil)
         return
       }
-            
+      
       Logger.DLog(String(data: data!, encoding: .utf8) ?? "")
       
       do {
@@ -95,7 +100,7 @@ class API {
       components?.queryItems = []
     }
     components?.queryItems?.append(URLQueryItem(name: "uid", value: uid))
-    URLSession.shared.dataTask(with: (components?.url)!, completionHandler: { data, response, error in
+    self.session?.dataTask(with: (components?.url)!, completionHandler: { data, response, error in
       let anError = isError(error: error, data: data, response: response as? HTTPURLResponse)
       guard anError == nil else {
         onComplete?(anError, nil)
@@ -135,6 +140,20 @@ func isError(error: Error?, data: Data?, response: HTTPURLResponse?) -> Error? {
   }
   
   return nil
+}
+
+extension API: URLSessionDelegate {
+  // Get Challenged twice, 2nd time challenge.protectionSpace.serverTrust is nil, but works!
+  public func urlSession(_ session: URLSession,
+                         didReceive challenge: URLAuthenticationChallenge,
+                         completionHandler: (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+    print("In invalid certificate completion handler")
+    if challenge.protectionSpace.serverTrust != nil {
+      completionHandler(.useCredential, URLCredential(trust: challenge.protectionSpace.serverTrust!))
+    } else {
+      completionHandler(.useCredential, nil)
+    }
+  }
 }
 
 enum APIError: Error {

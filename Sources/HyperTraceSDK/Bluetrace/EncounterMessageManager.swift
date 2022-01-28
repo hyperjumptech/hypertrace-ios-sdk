@@ -45,7 +45,6 @@ class EncounterMessageManager {
         UserDefaults.standard.set(response.tempIds.map { $0.asDictionary() }, forKey: self.userDefaultsTempIdArrayKey)
         
       }
-      
     }
   }
   
