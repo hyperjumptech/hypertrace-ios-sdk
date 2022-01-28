@@ -23,7 +23,7 @@ You also need to have a [Hypertrace server](https://github.com/hyperjumptech/hyp
 
 ## Usage
 
-Before the tracing started, you need to initialize the SDK by getting the handshake PIN.
+Before the tracing started, you need to initialize the SDK and call the `start` function.
 
 ```swift
 import HyperTraceSDK
