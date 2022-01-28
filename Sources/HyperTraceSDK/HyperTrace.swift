@@ -3,7 +3,7 @@ import CoreData
 public class HyperTrace {
   private static var sharedInstance: HyperTrace?
   
-  public var requirements: OpenTraceRequirements = OpenTraceRequirements()
+  public var requirements: HyperTraceRequirements = HyperTraceRequirements()
   
   public static func shared(baseUrl: String = "http://localhost:3000/api", uid: String = "") -> HyperTrace {
     if sharedInstance == nil {
@@ -47,6 +47,9 @@ public class HyperTrace {
   public init(baseUrl: String, uid: String) {
     let _ = API.shared(baseUrl: baseUrl)
     self.setIdentity(uid)
+  }
+  
+  public func start() {
     DatabaseManager.shared().persistentContainer = self.persistentContainer
     EncounterMessageManager.shared.setup()
     BlueTraceLocalNotifications.shared.initialConfiguration()
@@ -65,10 +68,6 @@ public class HyperTrace {
   
   public func setIdentity (_ identity: String) {
     API.shared().uid = identity
-  }
-  
-  public func getHandshakePIN(_ onComplete: ( (Error?, String?) -> Void )?) {
-    API.shared().getHandshakePin(onComplete)
   }
   
   public func upload(code: String, onComplete: ( (Error?) -> Void )?) {
@@ -126,7 +125,7 @@ extension HyperTrace {
   }
 }
 
-public struct OpenTraceRequirements {
+public struct HyperTraceRequirements {
   var bleAuthorized: Bool = false
   var blePoweredOn: Bool = false
 }
