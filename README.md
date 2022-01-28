@@ -28,11 +28,10 @@ Before the tracing started, you need to initialize the SDK by getting the handsh
 ```swift
 import HyperTraceSDK
 
-HyperTrace.shared(baseUrl: "the_url_of_hypertrace_server", uid: "unique_id_to_identify_the_device_or_user")
-     .getHandshakePIN { [weak self]  error, pin in
-        // After the handshake PIN is fetched, keep it somewhere safe.
-        // At this point, the tracing will start automatically.
-     }
+HyperTrace
+  .shared(baseUrl: "hypertrace-server-url-here",
+          uid: UserDefaults.standard.string(forKey: "userId")!)
+  .start()
 ```
 
 To upload the encounters data, call the `upload` function.
