@@ -5,9 +5,9 @@ public class HyperTrace {
   
   public var requirements: HyperTraceRequirements = HyperTraceRequirements()
   
-  public static func shared(baseUrl: String = "http://localhost:3000/api", uid: String = "") -> HyperTrace {
+  public static func shared() -> HyperTrace {
     if sharedInstance == nil {
-      sharedInstance = HyperTrace(baseUrl: baseUrl, uid: uid)
+      sharedInstance = HyperTrace()
     }
     return sharedInstance!
   }
@@ -44,12 +44,11 @@ public class HyperTrace {
     return container
   }()
   
-  public init(baseUrl: String, uid: String) {
+  public init() {}
+  
+  public func start(baseUrl: String = "http://localhost:3000/api", uid: String = "") {
     let _ = API.shared(baseUrl: baseUrl)
     self.setIdentity(uid)
-  }
-  
-  public func start() {
     DatabaseManager.shared().persistentContainer = self.persistentContainer
     EncounterMessageManager.shared.setup()
     BlueTraceLocalNotifications.shared.initialConfiguration()
@@ -126,7 +125,7 @@ extension HyperTrace {
 }
 
 extension HyperTrace {
-  public func removeData(since: Int = BluetraceConfig.TTLDays, unit: Calendar.Component = .day) {
+  public static func removeData(since: Int = BluetraceConfig.TTLDays, unit: Calendar.Component = .day) {
     BluetraceUtils.removeData(since: since, unit: unit)
   }
 }

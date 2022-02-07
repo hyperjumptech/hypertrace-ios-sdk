@@ -31,9 +31,9 @@ Before the tracing started, you need to initialize the SDK and call the `start` 
 import HyperTraceSDK
 
 HyperTrace
-  .shared(baseUrl: "hypertrace-server-url-here",
-          uid: UserDefaults.standard.string(forKey: "userId")!)
-  .start()
+  .shared()
+  .start(baseUrl: "hypertrace-server-url-here",
+         uid: UserDefaults.standard.string(forKey: "userId")!)
 ```
 
 ### Data Upload
@@ -59,13 +59,13 @@ HyperTrace.shared().upload(code: code) { [weak self] error in
 To prevent excessive amount of encounter data stored in the device, your app needs to call `removeData` function from time to time. It's better to call this function when your app enters foreground.
 
 ```swift
-HyperTrace.shared().removeData()
+HyperTrace.removeData()
 ```
 
 By default, that function will delete data older than 21 days. You can change the cut off time as follows
 
 ```swift
-HyperTrace.shared().removeData(since: 10, unit: .day)
+HyperTrace.removeData(since: 10, unit: .day)
 ```
 
 ### Debugging
