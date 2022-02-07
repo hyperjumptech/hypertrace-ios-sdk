@@ -16,7 +16,7 @@ public struct BluetraceConfig {
 
     static let charUUIDArray = [CharacteristicServiceIDv2]
 
-    static let OrgID = "hyperjump"
+    static let OrgID = PlistHelper.getvalueFromInfoPlist(withKey: "TRACER_ORG") ?? "hyperjump"
     static let ProtocolVersion = 2
 
     static let CentralScanInterval = 60 // in seconds
