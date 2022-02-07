@@ -7,7 +7,7 @@ import CoreData
 import Foundation
 import CoreBluetooth
 
-class BluetraceUtils {
+public class BluetraceUtils {
     static func managerStateToString(_ state: CBManagerState) -> String {
         switch state {
         case .poweredOff:
@@ -42,14 +42,20 @@ class BluetraceUtils {
         }
     }
 
-    static func removeData21DaysOld() {
-        Logger.DLog("Removing 21 days old data from device!")
+  
+  /// This function removes data that is older than given time and time unit.  By default the value is 21 days, i.e., time is 21 and the unit is day.
+  /// - Parameters:
+  ///   - since: the cut off time. Default is 21. Please provide positive Int.
+  ///   - unit: the unit of since. Default is day.
+  public static func removeData(since: Int = BluetraceConfig.TTLDays, unit: Calendar.Component = .day) {
+        assert(since > 0, "since cannot be less than 1")
+        Logger.DLog("Removing \(since) \(unit) old data from device!")
         let managedContext = HyperTrace.shared().persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<Encounter>(entityName: "Encounter")
         fetchRequest.includesPropertyValues = false
 
         // For e.g. 31st of March, we get reverseCutOffDate of 10th March
-        let reverseCutOffDate: Date? = Calendar.current.date(byAdding: .day, value: BluetraceConfig.TTLDays, to: Date())
+        let reverseCutOffDate: Date? = Calendar.current.date(byAdding: unit, value: -since, to: Date())
         if let validDate = reverseCutOffDate {
             let predicateForDel = NSPredicate(format: "timestamp < %@", validDate as NSDate)
             fetchRequest.predicate = predicateForDel

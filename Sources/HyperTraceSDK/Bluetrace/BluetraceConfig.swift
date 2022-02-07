@@ -6,7 +6,7 @@ import CoreBluetooth
 
 import Foundation
 
-struct BluetraceConfig {
+public struct BluetraceConfig {
     
     // To obtain the official BlueTrace Service ID and Characteristic ID, please email info@bluetrace.io
     static let BluetoothServiceID = CBUUID(string: "\(PlistHelper.getvalueFromInfoPlist(withKey: "TRACER_SVC_ID") ?? "A6BA4286-C550-4794-A888-9467EF0B31A8")")
@@ -22,5 +22,5 @@ struct BluetraceConfig {
     static let CentralScanInterval = 60 // in seconds
     static let CentralScanDuration = 10 // in seconds
 
-    static let TTLDays = -21
+    public static let TTLDays = 21
 }

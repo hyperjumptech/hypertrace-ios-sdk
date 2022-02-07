@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "DLog",
+        "repositoryURL": "https://github.com/ikhvorost/DLog.git",
+        "state": {
+          "branch": null,
+          "revision": "0cc692b6c284f402183bc6203de1b40973ece7ca",
+          "version": "1.2.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

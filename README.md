@@ -23,6 +23,8 @@ You also need to have a [Hypertrace server](https://github.com/hyperjumptech/hyp
 
 ## Usage
 
+### Initialization
+
 Before the tracing started, you need to initialize the SDK and call the `start` function.
 
 ```swift
@@ -33,6 +35,8 @@ HyperTrace
           uid: UserDefaults.standard.string(forKey: "userId")!)
   .start()
 ```
+
+### Data Upload
 
 To upload the encounters data, call the `upload` function.
 
@@ -49,6 +53,22 @@ HyperTrace.shared().upload(code: code) { [weak self] error in
     // at this point, you can show success message or something
 }
 ```
+
+### Data Clean Up
+
+To prevent excessive amount of encounter data stored in the device, your app needs to call `removeData` function from time to time. It's better to call this function when your app enters foreground.
+
+```swift
+HyperTrace.shared().removeData()
+```
+
+By default, that function will delete data older than 21 days. You can change the cut off time as follows
+
+```swift
+HyperTrace.shared().removeData(since: 10, unit: .day)
+```
+
+### Debugging
 
 For debugging purpose, you can observe the encounter logs by getting the [NSFetchedResultsController](https://developer.apple.com/documentation/coredata/nsfetchedresultscontroller) instance.
 

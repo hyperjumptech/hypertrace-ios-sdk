@@ -125,6 +125,12 @@ extension HyperTrace {
   }
 }
 
+extension HyperTrace {
+  public func removeData(since: Int = BluetraceConfig.TTLDays, unit: Calendar.Component = .day) {
+    BluetraceUtils.removeData(since: since, unit: unit)
+  }
+}
+
 public struct HyperTraceRequirements {
   var bleAuthorized: Bool = false
   var blePoweredOn: Bool = false
