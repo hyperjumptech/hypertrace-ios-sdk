@@ -62,10 +62,10 @@ To prevent excessive amount of encounter data stored in the device, your app nee
 HyperTrace.removeData()
 ```
 
-By default, that function will delete data older than 21 days. You can change the cut off time as follows
+By default, that function will delete all encounters which are **older** than 21 days. You can change the cut off time as follows
 
 ```swift
-HyperTrace.removeData(olderThan: 10, unit: .day)
+HyperTrace.removeData(olderThan: 10, unit: .day) // Remove all encounters which are older than 10 days ago
 ```
 
 ### Number of Encounters Data
@@ -73,8 +73,8 @@ HyperTrace.removeData(olderThan: 10, unit: .day)
 You can get the number of encounters saved in the device as follows
 
 ```swift
-let encountersCount = HyperTrace.countEncounters() // get the number of encounters older than 21 days ago
-let encountersCount2 = HyperTrace.countEncounters(olderThan: 1, unit: .minute) // get the number of encounters older than 1 minute ago
+let encountersCount = HyperTrace.countEncounters() // The default. Get the number of all encounters which are older than 21 days ago
+let encountersCount2 = HyperTrace.countEncounters(olderThan: 1, unit: .minute) // Get the number of all encounters which are older than 1 minute ago
 ```
 
 ### Debugging
@@ -111,6 +111,15 @@ class LogViewController: UITableViewController {
 ```
 
 For a working example, see the [HyperTrace Sample app](https://github.com/hyperjumptech/hypertrace-ios-sdk-sample).
+
+## Testing
+
+The tests can be run either from the Xcode, or from the Terminal using the following command
+
+```shell
+xcodebuild -scheme HyperTraceSDK test -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 12 Pro'
+
+```
 
 ## License
 

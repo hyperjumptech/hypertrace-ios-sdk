@@ -48,7 +48,6 @@ public class BluetraceUtils {
   ///   - olderThan: the cut off time. Default is 21. Please provide positive Int.
   ///   - unit: the unit of since. Default is day.
   public static func removeData(olderThan: Int = BluetraceConfig.TTLDays, unit: Calendar.Component = .day) {
-    assert(olderThan > 0, "olderThan cannot be less than 1")
     Logger.DLog("Removing data older than \(olderThan) \(unit) ago from device!")
     let managedContext = HyperTrace.shared().persistentContainer.viewContext
     let fetchRequest = NSFetchRequest<Encounter>(entityName: "Encounter")
@@ -68,6 +67,22 @@ public class BluetraceUtils {
       } catch {
         print("Could not perform delete of old data. \(error)")
       }
+    }
+  }
+  
+  public static func removeAllEncounters () {
+    Logger.DLog("Removing all encounters")
+    let managedContext = HyperTrace.shared().persistentContainer.viewContext
+    let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Encounter")
+    fetchRequest.includesPropertyValues = false
+    
+    do {
+      let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+      
+      try managedContext.execute(deleteRequest)
+      try managedContext.save()
+    } catch {
+      print(error)
     }
   }
   
