@@ -65,7 +65,16 @@ HyperTrace.removeData()
 By default, that function will delete data older than 21 days. You can change the cut off time as follows
 
 ```swift
-HyperTrace.removeData(since: 10, unit: .day)
+HyperTrace.removeData(olderThan: 10, unit: .day)
+```
+
+### Number of Encounters Data
+
+You can get the number of encounters saved in the device as follows
+
+```swift
+let encountersCount = HyperTrace.countEncounters() // get the number of encounters older than 21 days ago
+let encountersCount2 = HyperTrace.countEncounters(olderThan: 1, unit: .minute) // get the number of encounters older than 1 minute ago
 ```
 
 ### Debugging

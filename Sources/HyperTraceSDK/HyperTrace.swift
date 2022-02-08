@@ -125,8 +125,12 @@ extension HyperTrace {
 }
 
 extension HyperTrace {
-  public static func removeData(since: Int = BluetraceConfig.TTLDays, unit: Calendar.Component = .day) {
-    BluetraceUtils.removeData(since: since, unit: unit)
+  public static func removeData(olderThan: Int = BluetraceConfig.TTLDays, unit: Calendar.Component = .day) {
+    BluetraceUtils.removeData(olderThan: olderThan, unit: unit)
+  }
+  
+  public static func countEncounters(olderThan: Int = BluetraceConfig.TTLDays, unit: Calendar.Component = .day) -> Int {
+    return BluetraceUtils.countEncounters(olderThan: olderThan, unit: unit)
   }
 }
 
