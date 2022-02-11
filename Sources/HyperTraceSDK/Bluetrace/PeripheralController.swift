@@ -20,7 +20,7 @@ public class PeripheralController: NSObject {
 
     private var characteristicDataV2: PeripheralCharacteristicsDataV2
 
-    private var peripheral: CBPeripheralManager!
+    private var peripheral: CBPeripheralManager?
     private var queue: DispatchQueue
 
     // Protocol v2 - CharacteristicServiceIDv2
@@ -44,15 +44,15 @@ public class PeripheralController: NSObject {
     }
 
     public func turnOff() {
-        guard peripheral != nil else {
+        guard let thePeripheral = peripheral else {
             return
         }
-        peripheral.stopAdvertising()
-        peripheral = nil
+      thePeripheral.stopAdvertising()
+      peripheral = nil
     }
 
-    public func getState() -> CBManagerState {
-        return peripheral.state
+    public func getState() -> CBManagerState? {
+        return peripheral?.state
     }
 }
 

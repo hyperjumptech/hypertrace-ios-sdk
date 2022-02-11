@@ -82,11 +82,11 @@ class BluetraceManager {
   }
   
   func getPeripheralStateText() -> String {
-    return BluetraceUtils.managerStateToString(peripheralController.getState())
+    return BluetraceUtils.managerStateToString(peripheralController.getState() ?? .unknown)
   }
   
   func getPeripheralState() -> CBManagerState {
-    return peripheralController.getState()
+    return peripheralController.getState() ?? .unknown
   }
   
   func isBluetoothAuthorized() -> Bool {
