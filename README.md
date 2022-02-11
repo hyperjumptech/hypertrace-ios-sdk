@@ -56,6 +56,14 @@ HyperTrace.shared().upload(code: code) { [weak self] error in
 }
 ```
 
+### Stop Tracing
+
+To stop the tracing, call the `stop` function.
+
+```swift
+HyperTrace.shared().stop()
+```
+
 ### Data Clean Up
 
 To prevent excessive amount of encounter data stored in the device, your app needs to call `removeData` function from time to time. It's better to call this function when your app enters foreground.
