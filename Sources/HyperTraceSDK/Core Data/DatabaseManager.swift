@@ -67,11 +67,11 @@ class DatabaseManager {
     let entityDescription = NSEntityDescription.entity(forEntityName: NSStringFromClass(classObject.self), in: context)
     fetchRequest.entity = entityDescription
     
-    if predicate != nil {
-      fetchRequest.predicate = predicate
+    if let pred = predicate {
+      fetchRequest.predicate = pred
     }
-    if sortDescriptor != nil {
-      fetchRequest.sortDescriptors = [sortDescriptor] as? [NSSortDescriptor]
+    if let sortDesc = sortDescriptor {
+      fetchRequest.sortDescriptors = [sortDesc]
     }
     if prefetchKeypaths != nil {
       fetchRequest.relationshipKeyPathsForPrefetching = prefetchKeypaths as? [String]

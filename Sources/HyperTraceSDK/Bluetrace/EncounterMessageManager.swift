@@ -10,7 +10,7 @@ class EncounterMessageManager {
   
   var tempId: String? {
     guard var tempIds = UserDefaults.standard.array(forKey: userDefaultsTempIdArrayKey) as! [[String: Any]]? else {
-      return "not_found"
+      return ""
     }
     
     if let bmExpiry = tempIds.first?["expiryTime"] as? Date {

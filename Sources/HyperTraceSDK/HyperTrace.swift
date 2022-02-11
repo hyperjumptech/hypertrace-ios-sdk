@@ -46,13 +46,22 @@ public class HyperTrace {
   
   public init() {}
   
-  public func start(baseUrl: String = "http://localhost:3000/api", uid: String = "") {
+  public func start(baseUrl: String, uid: String = "") {
     let _ = API.shared(baseUrl: baseUrl)
     self.setIdentity(uid)
     DatabaseManager.shared().persistentContainer = self.persistentContainer
     EncounterMessageManager.shared.setup()
     BlueTraceLocalNotifications.shared.initialConfiguration()
     BluetraceManager.shared.turnOn()
+  }
+  
+  public func stop() {
+    BluetraceManager.shared.turnOff()
+    BlueTraceLocalNotifications.shared.removePendingNotificationRequests()
+  }
+  
+  public func isTracing() -> Bool {
+    return BluetraceManager.shared.getCentralState() == .poweredOn || BluetraceManager.shared.getPeripheralState() == .poweredOn
   }
   
   public func getFetchedResultsController(delegate: NSFetchedResultsControllerDelegate?) -> NSFetchedResultsController<Encounter> {
