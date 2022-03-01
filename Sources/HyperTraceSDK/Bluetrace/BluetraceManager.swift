@@ -14,6 +14,12 @@ class BluetraceManager {
   
   private init() {
     queue = DispatchQueue(label: "BluetraceManager")
+#if DEBUG
+    if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil {
+      // if running during test, return immediately
+      return
+    }
+#endif
     peripheralController = PeripheralController(peripheralName: "TR", queue: queue)
     centralController = CentralController(queue: queue)
     centralController.centralDidUpdateStateCallback = centralDidUpdateStateCallback
@@ -61,11 +67,23 @@ class BluetraceManager {
   }
   
   func turnOn() {
+#if DEBUG
+    if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil {
+      // if running during test, return immediately
+      return
+    }
+#endif
     peripheralController.turnOn()
     centralController.turnOn()
   }
   
   func turnOff() {
+#if DEBUG
+    if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil {
+      // if running during test, return immediately
+      return
+    }
+#endif
     peripheralController.turnOff()
     centralController.turnOff()
   }

@@ -46,8 +46,8 @@ public class HyperTrace {
   
   public init() {}
   
-  public func start(baseUrl: String, uid: String = "") {
-    let _ = API.shared(baseUrl: baseUrl)
+  public func start(baseUrl: String, uid: String = "", sessionConfiguration: URLSessionConfiguration? = nil) {
+    let _ = API.shared(baseUrl: baseUrl, sessionConfiguration: sessionConfiguration)
     self.setIdentity(uid)
     DatabaseManager.shared().persistentContainer = self.persistentContainer
     EncounterMessageManager.shared.setup()
@@ -142,6 +142,14 @@ extension HyperTrace {
     return BluetraceUtils.countEncounters(olderThan: olderThan, unit: unit)
   }
 }
+
+#if DEBUG
+extension HyperTrace {
+  public static func getSession () -> URLSession? {
+    return API.shared().session
+  }
+}
+#endif
 
 public struct HyperTraceRequirements {
   var bleAuthorized: Bool = false

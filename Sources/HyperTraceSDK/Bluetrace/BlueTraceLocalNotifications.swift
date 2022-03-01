@@ -10,7 +10,17 @@ class BlueTraceLocalNotifications: NSObject {
     static let shared = BlueTraceLocalNotifications()
 
     func initialConfiguration() {
+#if DEBUG
+      if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil {
+        // Code only executes when tests are running
+        // no need to call UNUserNotificationCenter.current()
+        // it's crashing during test
+      } else {
         UNUserNotificationCenter.current().delegate = self
+      }
+#else
+      UNUserNotificationCenter.current().delegate = self
+#endif
         setupBluetoothPNStatusCallback()
     }
 

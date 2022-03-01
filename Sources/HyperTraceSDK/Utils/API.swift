@@ -21,19 +21,34 @@ class API: NSObject {
   var uid: String = ""
   var session: URLSession?
   
-  static func shared(baseUrl: String = "http://localhost:3000/api") -> API {
+  static func shared(baseUrl: String? = nil, sessionConfiguration: URLSessionConfiguration? = nil) -> API {
     if sharedAPI == nil {
-      sharedAPI = API(baseUrl: baseUrl)
+      sharedAPI = API()
     }
+    
+    sharedAPI?.update(baseUrl: baseUrl, sessionConfiguration: sessionConfiguration)
     return sharedAPI!
   }
   
-  init (baseUrl: String) {
+  init (baseUrl: String = "", sessionConfiguration: URLSessionConfiguration? = nil) {
     super.init()
+    
     self.baseUrl = baseUrl
-    self.session = URLSession(configuration: URLSessionConfiguration.default,
+    let configuration = sessionConfiguration ?? .default
+    self.session = URLSession(configuration: configuration,
                               delegate: self,
                               delegateQueue: nil)
+  }
+  
+  func update(baseUrl: String? = nil, sessionConfiguration: URLSessionConfiguration? = nil) {
+    if let baseUrl = baseUrl {
+      self.baseUrl = baseUrl
+    }
+    if let sessionConfiguration = sessionConfiguration {
+      self.session =  URLSession(configuration: sessionConfiguration,
+                                 delegate: self,
+                                 delegateQueue: nil)
+    }
   }
   
   func getHandshakePin(_ onComplete: ( (Error?, (String)?) -> Void)?) {

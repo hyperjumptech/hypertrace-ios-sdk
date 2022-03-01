@@ -7,8 +7,22 @@ final class HyperTraceSDKTests: XCTestCase {
   }
   
   func testInit() throws {
-    XCTAssertNotNil(HyperTrace.shared())
-    XCTAssertNotNil(HyperTrace.shared().persistentContainer)
+    let hyperTrace = HyperTrace.shared()
+    XCTAssertNotNil(hyperTrace)
+    XCTAssertNotNil(hyperTrace.persistentContainer)
+  }
+  
+  func testSession() throws {
+    let hyperTrace = HyperTrace.shared()
+    let configuration = URLSessionConfiguration.default
+    configuration.timeoutIntervalForRequest = 1000
+    
+    // start the hypertrace with custom session configuration
+    hyperTrace.start(baseUrl: "http://localhost:3000", uid: "hello", sessionConfiguration: configuration)
+    
+    let session = HyperTrace.getSession()
+    XCTAssertNotNil(session)
+    XCTAssertEqual(session?.configuration.timeoutIntervalForRequest, 1000)
   }
   
   func testEncounterRecord() throws {

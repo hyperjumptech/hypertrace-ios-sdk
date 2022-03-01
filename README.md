@@ -56,6 +56,23 @@ HyperTrace.shared().upload(code: code) { [weak self] error in
 }
 ```
 
+#### Upload Timeout
+
+Under the hood, the SDK uses [URLSession](https://developer.apple.com/documentation/foundation/urlsession) with the [default configuration](https://developer.apple.com/documentation/foundation/urlsessionconfiguration), which sets the [request timeout to 60 seconds](https://developer.apple.com/documentation/foundation/urlsessionconfiguration/1408259-timeoutintervalforrequest). To change this value, you need to pass your custom session configuration when calling the `start` function as follows.
+
+```swift
+import HyperTraceSDK
+
+let configuration = URLSessionConfiguration.default
+configuration.timeoutIntervalForRequest = 1000 // in seconds
+
+HyperTrace
+  .shared()
+  .start(baseUrl: "hypertrace-server-url-here",
+         uid: UserDefaults.standard.string(forKey: "userId")!,
+         sessionConfiguration: configuration)
+```
+
 ### Stop Tracing
 
 To stop the tracing, call the `stop` function.
