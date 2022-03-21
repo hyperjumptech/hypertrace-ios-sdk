@@ -17,7 +17,7 @@ jobs:
           brew install swiftformat
       - name: Lint
         run: |
-          swiftformat --lint .
+          swiftformat --lint Sources
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.6 # Not needed with a .ruby-version file
