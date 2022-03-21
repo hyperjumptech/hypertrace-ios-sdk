@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Nico Prananta on 27.12.21.
 //
@@ -20,62 +20,62 @@ class API: NSObject {
   private var baseUrl: String = ""
   var uid: String = ""
   var session: URLSession?
-  
+
   static func shared(baseUrl: String? = nil, sessionConfiguration: URLSessionConfiguration? = nil) -> API {
     if sharedAPI == nil {
       sharedAPI = API()
     }
-    
+
     sharedAPI?.update(baseUrl: baseUrl, sessionConfiguration: sessionConfiguration)
     return sharedAPI!
   }
-  
-  init (baseUrl: String = "", sessionConfiguration: URLSessionConfiguration? = nil) {
+
+  init(baseUrl: String = "", sessionConfiguration: URLSessionConfiguration? = nil) {
     super.init()
-    
+
     self.baseUrl = baseUrl
     let configuration = sessionConfiguration ?? .default
-    self.session = URLSession(configuration: configuration,
-                              delegate: self,
-                              delegateQueue: nil)
+    session = URLSession(configuration: configuration,
+                         delegate: self,
+                         delegateQueue: nil)
   }
-  
+
   func update(baseUrl: String? = nil, sessionConfiguration: URLSessionConfiguration? = nil) {
     if let baseUrl = baseUrl {
       self.baseUrl = baseUrl
     }
     if let sessionConfiguration = sessionConfiguration {
-      self.session =  URLSession(configuration: sessionConfiguration,
-                                 delegate: self,
-                                 delegateQueue: nil)
+      session = URLSession(configuration: sessionConfiguration,
+                           delegate: self,
+                           delegateQueue: nil)
     }
   }
-  
-  func getHandshakePin(_ onComplete: ( (Error?, (String)?) -> Void)?) {
-    sendData(url: "\(baseUrl)/\(APIPath.getHandshakePin)") { (error: Error?, resp: HandshakePINResponse?) -> Void in
+
+  func getHandshakePin(_ onComplete: ((Error?, String?) -> Void)?) {
+    sendData(url: "\(baseUrl)/\(APIPath.getHandshakePin)") { (error: Error?, resp: HandshakePINResponse?) in
       onComplete?(error, (resp != nil) ? resp!.pin : nil)
     }
   }
-  
-  func getBroadcastMessage(_ onComplete: ( (Error?, (String, Date)?) -> Void)?) {
-    sendData(url: "\(baseUrl)/\(APIPath.getBroadcastMessage)") { (error: Error?, resp: BroadcastMessageResponse?) -> Void in
+
+  func getBroadcastMessage(_ onComplete: ((Error?, (String, Date)?) -> Void)?) {
+    sendData(url: "\(baseUrl)/\(APIPath.getBroadcastMessage)") { (error: Error?, resp: BroadcastMessageResponse?) in
       onComplete?(error, (resp != nil) ? (resp!.bm, Date(timeIntervalSince1970: resp!.refreshTime)) : nil)
     }
   }
-  
-  func getTempIDs(_ onComplete: ( (Error?, ([TempId], Date)?) -> Void)?) {
-    sendData(url: "\(baseUrl)/\(APIPath.getTempIDs)") { (error: Error?, resp: TempIDsResponse?) -> Void in
+
+  func getTempIDs(_ onComplete: ((Error?, ([TempId], Date)?) -> Void)?) {
+    sendData(url: "\(baseUrl)/\(APIPath.getTempIDs)") { (error: Error?, resp: TempIDsResponse?) in
       onComplete?(error, (resp != nil) ? (resp!.tempIDs, Date(timeIntervalSince1970: resp!.refreshTime)) : nil)
     }
   }
-  
-  func getUploadToken(code: String, _ onComplete: ( (Error?, String?) -> Void)?) {
-    sendData(url: "\(baseUrl)/\(APIPath.getUploadToken)?data=\(code)") { (error: Error?, resp: UploadTokenResponse?) -> Void in
+
+  func getUploadToken(code: String, _ onComplete: ((Error?, String?) -> Void)?) {
+    sendData(url: "\(baseUrl)/\(APIPath.getUploadToken)?data=\(code)") { (error: Error?, resp: UploadTokenResponse?) in
       onComplete?(error, resp?.token)
     }
   }
-  
-  func uploadData(token: String, traces: [Encounter], _ onComplete: ( (Error?, String?) -> Void)?) {
+
+  func uploadData(token: String, traces: [Encounter], _ onComplete: ((Error?, String?) -> Void)?) {
     let uploadBody = UploadBody(uid: uid, uploadToken: token, traces: traces)
     let url = "\(baseUrl)/\(APIPath.uploadData)"
     var urlRequest = URLRequest(url: URL(string: url)!)
@@ -89,16 +89,16 @@ class API: NSObject {
       Logger.DLog("JSONEncoder error: \(error)")
       onComplete?(APIError.encodingError(message: error.localizedDescription), nil)
     }
-    
-    self.session?.dataTask(with: urlRequest, completionHandler: { data, response, error in
+
+    session?.dataTask(with: urlRequest, completionHandler: { data, response, error in
       let anError = isError(error: error, data: data, response: response as? HTTPURLResponse)
       guard anError == nil else {
         onComplete?(anError, nil)
         return
       }
-      
+
       Logger.DLog(String(data: data!, encoding: .utf8) ?? "")
-      
+
       do {
         let resp = try JSONDecoder().decode(BasicResponse.self, from: data!)
         onComplete?(nil, resp.status.rawValue)
@@ -108,20 +108,20 @@ class API: NSObject {
       }
     }).resume()
   }
-  
-  func sendData<ResponseType: Decodable>(url: String, onComplete: ((Error?, ResponseType?) -> Void)? ) {
+
+  func sendData<ResponseType: Decodable>(url: String, onComplete: ((Error?, ResponseType?) -> Void)?) {
     var components = URLComponents(string: url)
     if components?.queryItems == nil {
       components?.queryItems = []
     }
     components?.queryItems?.append(URLQueryItem(name: "uid", value: uid))
-    self.session?.dataTask(with: (components?.url)!, completionHandler: { data, response, error in
+    session?.dataTask(with: (components?.url)!, completionHandler: { data, response, error in
       let anError = isError(error: error, data: data, response: response as? HTTPURLResponse)
       guard anError == nil else {
         onComplete?(anError, nil)
         return
       }
-      
+
       do {
         let resp = try JSONDecoder().decode(ResponseType.self, from: data!)
         onComplete?(nil, resp)
@@ -138,30 +138,31 @@ func isError(error: Error?, data: Data?, response: HTTPURLResponse?) -> Error? {
     Logger.DLog("API Error: \(error!)")
     return error
   }
-  
+
   guard let httpResponse = response else {
     Logger.DLog("API Error: Empty response")
     return APIError.emptyData
   }
-  
+
   guard httpResponse.statusCode == 200 else {
     Logger.DLog("API Error: HTTP Status \(httpResponse.statusCode)")
     let message = data != nil ? String(data: data!, encoding: .utf8) ?? "None" : "None"
     return APIError.not200(message: "HTTP Status: \(httpResponse.statusCode). Message: \(message)")
   }
-  
+
   guard let _ = data else {
     return APIError.emptyData
   }
-  
+
   return nil
 }
 
 extension API: URLSessionDelegate {
   // Get Challenged twice, 2nd time challenge.protectionSpace.serverTrust is nil, but works!
-  public func urlSession(_ session: URLSession,
+  public func urlSession(_: URLSession,
                          didReceive challenge: URLAuthenticationChallenge,
-                         completionHandler: (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+                         completionHandler: (URLSession.AuthChallengeDisposition, URLCredential?) -> Void)
+  {
     print("In invalid certificate completion handler")
     if challenge.protectionSpace.serverTrust != nil {
       completionHandler(.useCredential, URLCredential(trust: challenge.protectionSpace.serverTrust!))
@@ -183,6 +184,7 @@ enum ResponseStatus: String, Codable {
   case Success = "SUCCESS"
   case Failure = "FAILURE"
 }
+
 struct BasicResponse: Codable {
   let status: ResponseStatus
 }

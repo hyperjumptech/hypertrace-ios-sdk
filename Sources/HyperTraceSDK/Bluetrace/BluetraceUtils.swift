@@ -2,12 +2,12 @@
 //  BluetraceUtils.swift
 //  OpenTrace
 
-import UIKit
+import CoreBluetooth
 import CoreData
 import Foundation
-import CoreBluetooth
+import UIKit
 
-public class BluetraceUtils {
+public enum BluetraceUtils {
   static func managerStateToString(_ state: CBManagerState) -> String {
     switch state {
     case .poweredOff:
@@ -26,7 +26,7 @@ public class BluetraceUtils {
       return "unknown"
     }
   }
-  
+
   static func peripheralStateToString(_ state: CBPeripheralState) -> String {
     switch state {
     case .disconnected:
@@ -41,8 +41,7 @@ public class BluetraceUtils {
       return "unknown"
     }
   }
-  
-  
+
   /// This function removes data from the beginning up to provided time and unit.  By default the value is 21 days, i.e., olderThan is 21 and the unit is day.
   /// - Parameters:
   ///   - olderThan: the cut off time. Default is 21. Please provide positive Int.
@@ -52,7 +51,7 @@ public class BluetraceUtils {
     let managedContext = HyperTrace.shared().persistentContainer.viewContext
     let fetchRequest = NSFetchRequest<Encounter>(entityName: "Encounter")
     fetchRequest.includesPropertyValues = false
-    
+
     // For e.g. 31st of March, we get reverseCutOffDate of 10th March
     let reverseCutOffDate: Date? = Calendar.current.date(byAdding: unit, value: -olderThan, to: Date())
     if let validDate = reverseCutOffDate {
@@ -69,29 +68,29 @@ public class BluetraceUtils {
       }
     }
   }
-  
-  public static func removeAllEncounters () {
+
+  public static func removeAllEncounters() {
     Logger.DLog("Removing all encounters")
     let managedContext = HyperTrace.shared().persistentContainer.viewContext
     let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Encounter")
     fetchRequest.includesPropertyValues = false
-    
+
     do {
       let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-      
+
       try managedContext.execute(deleteRequest)
       try managedContext.save()
     } catch {
       print(error)
     }
   }
-  
+
   public static func countEncounters(olderThan: Int = BluetraceConfig.TTLDays, unit: Calendar.Component = .day) -> Int {
     Logger.DLog("Counting number of encounters older than \(olderThan) \(unit) ago.")
     let managedContext = HyperTrace.shared().persistentContainer.viewContext
     let fetchRequest = NSFetchRequest<Encounter>(entityName: "Encounter")
     fetchRequest.includesPropertyValues = false
-    
+
     // For e.g. 31st of March, we get reverseCutOffDate of 10th March
     let reverseCutOffDate: Date? = Calendar.current.date(byAdding: unit, value: -olderThan, to: Date())
     if let validDate = reverseCutOffDate {
@@ -104,10 +103,10 @@ public class BluetraceUtils {
         print("Could not perform count of old data. \(error)")
       }
     }
-    
+
     return 0
   }
-  
+
   public static func countEncounters(inTheLast: Int = BluetraceConfig.TTLDays, unit: Calendar.Component = .day) -> Int {
     guard inTheLast > 0 else {
       return 0
@@ -116,7 +115,7 @@ public class BluetraceUtils {
     let managedContext = HyperTrace.shared().persistentContainer.viewContext
     let fetchRequest = NSFetchRequest<Encounter>(entityName: "Encounter")
     fetchRequest.includesPropertyValues = false
-    
+
     let cutOffDate: Date? = Calendar.current.date(byAdding: unit, value: -inTheLast, to: Date())
     if let validDate = cutOffDate {
       let predicateForDel = NSPredicate(format: "timestamp > %@", validDate as NSDate)
@@ -128,7 +127,7 @@ public class BluetraceUtils {
         print("Could not perform count of number of encounters. \(error)")
       }
     }
-    
+
     return 0
   }
 }

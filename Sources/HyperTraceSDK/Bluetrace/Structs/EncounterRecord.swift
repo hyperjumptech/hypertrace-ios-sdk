@@ -13,56 +13,56 @@ struct EncounterRecord: Encodable {
   var txPower: Double?
   var org: String?
   var v: Int?
-  
+
   mutating func update(msg: String) {
     self.msg = msg
   }
-  
+
   mutating func update(modelP: String) {
     self.modelP = modelP
   }
-  
+
   // This initializer is used when central discovered a peripheral, and need to record down the rssi and txpower, and have not yet connected with the peripheral to get the msg
   init(rssi: Double, txPower: Double?) {
-    self.timestamp = Date()
-    self.msg = nil
-    self.modelC = Device.current.description
-    self.modelP = nil
+    timestamp = Date()
+    msg = nil
+    modelC = Device.current.description
+    modelP = nil
     self.rssi = rssi
     self.txPower = txPower
-    self.org = nil
-    self.v = nil
+    org = nil
+    v = nil
   }
-  
+
   init(rssi: Double, txPower: Double?, timestamp: Date?) {
     self.timestamp = timestamp ?? Date()
-    self.msg = nil
-    self.modelC = Device.current.description
-    self.modelP = nil
+    msg = nil
+    modelC = Device.current.description
+    modelP = nil
     self.rssi = rssi
     self.txPower = txPower
-    self.org = nil
-    self.v = nil
+    org = nil
+    v = nil
   }
-  
+
   init(from centralWriteDataV2: CentralWriteDataV2) {
-    self.timestamp = Date()
-    self.msg = centralWriteDataV2.id
-    self.modelC = centralWriteDataV2.mc
-    self.modelP = Device.current.description
-    self.rssi = centralWriteDataV2.rs
-    self.org = centralWriteDataV2.o
-    self.v = centralWriteDataV2.v
+    timestamp = Date()
+    msg = centralWriteDataV2.id
+    modelC = centralWriteDataV2.mc
+    modelP = Device.current.description
+    rssi = centralWriteDataV2.rs
+    org = centralWriteDataV2.o
+    v = centralWriteDataV2.v
   }
-  
+
   init(msg: String) {
-    self.timestamp = Date()
+    timestamp = Date()
     self.msg = msg
-    self.modelC = nil
-    self.modelP = nil
-    self.rssi = nil
-    self.txPower = nil
-    self.org = nil
-    self.v = nil
+    modelC = nil
+    modelP = nil
+    rssi = nil
+    txPower = nil
+    org = nil
+    v = nil
   }
 }

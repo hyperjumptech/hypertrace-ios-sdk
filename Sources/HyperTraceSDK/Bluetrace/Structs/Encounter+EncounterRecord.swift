@@ -2,11 +2,10 @@
 //  Encounter+EncounterRecord.swift
 //  OpenTrace
 
-import UIKit
 import CoreData
+import UIKit
 
 extension EncounterRecord {
-  
   func saveToCoreData() {
     DispatchQueue.main.async {
       let managedContext = HyperTrace.shared().persistentContainer.viewContext
@@ -20,5 +19,4 @@ extension EncounterRecord {
       }
     }
   }
-  
 }
