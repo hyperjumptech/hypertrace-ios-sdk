@@ -107,4 +107,28 @@ public class BluetraceUtils {
     
     return 0
   }
+  
+  public static func countEncounters(inTheLast: Int = BluetraceConfig.TTLDays, unit: Calendar.Component = .day) -> Int {
+    guard inTheLast > 0 else {
+      return 0
+    }
+    Logger.DLog("Counting number of encounters in the last \(inTheLast) \(unit).")
+    let managedContext = HyperTrace.shared().persistentContainer.viewContext
+    let fetchRequest = NSFetchRequest<Encounter>(entityName: "Encounter")
+    fetchRequest.includesPropertyValues = false
+    
+    let cutOffDate: Date? = Calendar.current.date(byAdding: unit, value: -inTheLast, to: Date())
+    if let validDate = cutOffDate {
+      let predicateForDel = NSPredicate(format: "timestamp > %@", validDate as NSDate)
+      fetchRequest.predicate = predicateForDel
+      do {
+        let encounters = try managedContext.count(for: fetchRequest)
+        return encounters
+      } catch {
+        print("Could not perform count of number of encounters. \(error)")
+      }
+    }
+    
+    return 0
+  }
 }

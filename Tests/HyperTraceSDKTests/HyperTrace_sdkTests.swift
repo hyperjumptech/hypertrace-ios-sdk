@@ -25,7 +25,7 @@ final class HyperTraceSDKTests: XCTestCase {
     XCTAssertEqual(session?.configuration.timeoutIntervalForRequest, 1000)
   }
   
-  func testEncounterRecord() throws {
+  func testCountEncounterRecordOlderThan() throws {
     // create an EncounterRecord
     let encounter = EncounterRecord(rssi: -20, txPower: 20)
     XCTAssertNotNil(encounter)
@@ -40,6 +40,35 @@ final class HyperTraceSDKTests: XCTestCase {
       // count the number of records in database,
       // and assert it's 1
       XCTAssertEqual(HyperTrace.countEncounters(olderThan: -1, unit: .second), 1)
+      expectation.fulfill()
+    }
+    
+    wait(for: [expectation], timeout: 3.0)
+  }
+  
+  func testCountEncounterRecordInTheLast() throws {
+    // create an EncounterRecord
+    let encounter = EncounterRecord(rssi: -20, txPower: 20)
+    XCTAssertNotNil(encounter)
+    
+    // save the encounter to database
+    encounter.saveToCoreData()
+    
+    // create an older EncounterRecord
+    let fiveMinutesAgo = Calendar.current.date(byAdding: .minute, value: -5, to: Date())
+    let encounter2 = EncounterRecord(rssi: -20, txPower: 20, timestamp: fiveMinutesAgo)
+    XCTAssertNotNil(encounter2)
+    
+    // save the encounter to database
+    encounter2.saveToCoreData()
+    
+    let expectation = XCTestExpectation(description: "Wait for saveToCoreData")
+    
+    // wait for a second so that the saving finishes
+    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+      // count the number of records in database,
+      // and assert it's 1
+      XCTAssertEqual(HyperTrace.countEncounters(inTheLast: 1, unit: .minute), 1)
       expectation.fulfill()
     }
     

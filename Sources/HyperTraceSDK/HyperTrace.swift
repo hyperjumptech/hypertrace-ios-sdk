@@ -141,6 +141,10 @@ extension HyperTrace {
   public static func countEncounters(olderThan: Int = BluetraceConfig.TTLDays, unit: Calendar.Component = .day) -> Int {
     return BluetraceUtils.countEncounters(olderThan: olderThan, unit: unit)
   }
+  
+  public static func countEncounters(inTheLast: Int = BluetraceConfig.TTLDays, unit: Calendar.Component = .day) -> Int {
+    return BluetraceUtils.countEncounters(inTheLast: inTheLast, unit: unit)
+  }
 }
 
 #if DEBUG
