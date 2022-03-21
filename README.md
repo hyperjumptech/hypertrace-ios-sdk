@@ -170,6 +170,20 @@ class LogViewController: UITableViewController {
 
 For a working example, see the [HyperTrace Sample app](https://github.com/hyperjumptech/hypertrace-ios-sdk-sample).
 
+## Linting
+
+This project uses [SwiftFormat](https://github.com/nicklockwood/SwiftFormat) to format and lint the swift files. The GitHub Actions workflow will lint the swift files before running the tests. To lint the swift files locally, run the following command.
+
+```shell
+swiftformat --lint .
+```
+
+To format your swift files, run the following command.
+
+```shell
+swiftformat .
+```
+
 ## Testing
 
 The tests can be run either from the Xcode, or from the Terminal using the following command
