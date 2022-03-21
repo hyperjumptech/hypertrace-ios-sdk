@@ -1,5 +1,6 @@
 import XCTest
 @testable import HyperTraceSDK
+import CoreBluetooth
 
 final class HyperTraceSDKTests: XCTestCase {
   override func setUp() {
@@ -108,6 +109,58 @@ final class HyperTraceSDKTests: XCTestCase {
       }
     }
     
+    wait(for: [expectation], timeout: 3.0)
+  }
+  
+  func testPeripheralControllerReceiveWrite() {
+    // create the PeripheralController instance that will be tested
+    let peripheralController = PeripheralController(peripheralName: "test", queue: .main)
+    
+    // create fake CBPeripheralManager
+    let manager = FakePeripheralManager()
+    
+    // create fake CBCharacteristic. We cannot call the init method because init function of CBCharacteristic is unavailable. The following is a workaround.
+    let characteristic = FakeCBCharacteristic.perform(NSSelectorFromString("new")).takeRetainedValue() as! FakeCBCharacteristic
+    let fakeCBUUID = FakeCBUUID()
+    fakeCBUUID._uuidString = "hello"
+    characteristic._uuid = fakeCBUUID
+    
+    // create the data that will be received
+    let data = """
+      {
+        "mc": "iPhone 13",
+        "rs": 100,
+        "id": "abcd",
+        "o": "Hyperjump",
+        "v": 2
+      }
+    """
+    
+    // create fake CBATTRequest
+    let request = FakeCBATTRequest.perform(NSSelectorFromString("new")).takeRetainedValue() as! FakeCBATTRequest
+    request.value = data.data(using: .utf8)
+    request._offset = 2
+    request._characteristic = characteristic
+    
+    XCTAssertNotNil(request)
+    XCTAssertNotNil(request.value)
+    XCTAssertEqual(request.offset, 2)
+    
+    // start testing peripheralManager(:didReceiveWrite:) function
+    peripheralController.peripheralManager(manager, didReceiveWrite: [request])
+    
+    // create expectation
+    let expectation = XCTestExpectation(description: "Wait for write")
+    
+    // wait until saving finishes
+    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+      // there should be 1 record in the last 3 secods if peripheralManager(:didReceiveWrite:) function succeeds
+      XCTAssertEqual(HyperTrace.countEncounters(inTheLast: 3, unit: .second), 1)
+      XCTAssertEqual(manager._result, .success)
+      expectation.fulfill()
+    }
+    
+    // wait until expectation is fulfilled
     wait(for: [expectation], timeout: 3.0)
   }
 }

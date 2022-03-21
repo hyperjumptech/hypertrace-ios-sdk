@@ -264,6 +264,10 @@ extension CentralController: CBPeripheralDelegate {
           return
         }
         
+        guard encounterStruct.modelC != nil && encounterStruct.modelP != nil else {
+          return
+        }
+        
         scannedPeripherals.updateValue((scannedPeri.peripheral, encounterStruct), forKey: peripheral.identifier)
         encounterStruct.saveToCoreData()
         
