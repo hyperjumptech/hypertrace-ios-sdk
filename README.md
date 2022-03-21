@@ -102,6 +102,7 @@ You can get the number of encounters saved in the device as follows
 ```swift
 let encountersCount = HyperTrace.countEncounters() // The default. Get the number of all encounters which are older than 21 days ago
 let encountersCount2 = HyperTrace.countEncounters(olderThan: 1, unit: .minute) // Get the number of all encounters which are older than 1 minute ago
+let encountersCount3 = HyperTrace.countEncounters(inTheLast: 1, unit: .minute) // Get the number of all encounters in the last 1 minute
 ```
 
 ### Debugging
