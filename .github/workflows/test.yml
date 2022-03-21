@@ -11,6 +11,13 @@ jobs:
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v2
+      - name: Install swiftformat
+        run: |
+          brew update
+          brew install swiftformat
+      - name: Lint
+        run: |
+          swiftformat --lint .
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.6 # Not needed with a .ruby-version file
