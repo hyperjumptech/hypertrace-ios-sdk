@@ -55,14 +55,21 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
-      codeCoverageEnabled = "YES"
-      onlyGenerateCoverageForSpecifiedTargets = "YES">
+      systemAttachmentLifetime = "keepNever"
+      codeCoverageEnabled = "YES">
       <CodeCoverageTargets>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "HyperTraceSDK"
             BuildableName = "HyperTraceSDK"
             BlueprintName = "HyperTraceSDK"
+            ReferencedContainer = "container:">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "HyperTraceSDKTests"
+            BuildableName = "HyperTraceSDKTests"
+            BlueprintName = "HyperTraceSDKTests"
             ReferencedContainer = "container:">
          </BuildableReference>
       </CodeCoverageTargets>

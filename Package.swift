@@ -26,7 +26,12 @@ let package = Package(
             name: "HyperTraceSDK",
             dependencies: [
               .product(name: "DLog", package: "DLog"),
-            ]),
+            ],
+            exclude: [
+              "../../README.md",
+              "../../Sources/HyperTraceSDK/Bluetrace/README.md"
+            ]
+        ),
         .testTarget(
             name: "HyperTraceSDKTests",
             dependencies: ["HyperTraceSDK"]),
