@@ -216,8 +216,13 @@ final class HyperTraceSDKTests: XCTestCase {
     
     // wait until expectation is fulfilled
     wait(for: [expectation], timeout: 3.0)
+  }
+  
+  func testSettingConfig () {
+    HyperTrace.setScanningDuration(100)
+    XCTAssertTrue(BluetraceConfig.CentralScanDuration == 100)
     
-    
-    
+    HyperTrace.setScanningInterval(100)
+    XCTAssertTrue(BluetraceConfig.CentralScanInterval == 100)
   }
 }

@@ -65,7 +65,7 @@ public class HyperTrace {
   }
   
   
-  /// Stops the tracing
+  /// Stops the tracing.
   public func stop() {
     BluetraceManager.shared.turnOff()
     BlueTraceLocalNotifications.shared.removePendingNotificationRequests()
@@ -190,6 +190,23 @@ extension HyperTrace {
   /// - Returns: The number of encounters.
   public static func countEncounters(inTheLast: Int = BluetraceConfig.TTLDays, unit: Calendar.Component = .day) -> Int {
     return BluetraceUtils.countEncounters(inTheLast: inTheLast, unit: unit)
+  }
+}
+
+extension HyperTrace {
+  /// Sets the interval of the scanning.
+  /// - Parameter interval: The desired interval in seconds.
+  public static func setScanningInterval (_ interval: Int) {
+    guard interval > 0 else { return }
+    BluetraceConfig.CentralScanInterval = interval
+  }
+  
+  
+  /// Sets the duration of the scanning.
+  /// - Parameter duration: The desired duration in seconds.
+  public static func setScanningDuration (_ duration: Int) {
+    guard duration > 0 else { return }
+    BluetraceConfig.CentralScanDuration = duration
   }
 }
 

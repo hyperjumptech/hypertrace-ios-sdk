@@ -38,6 +38,36 @@ HyperTrace
          uid: UserDefaults.standard.string(forKey: "userId")!)
 ```
 
+### Setting configuration
+
+#### Interval of the scanning
+
+By default, the SDK will scan nearby devices every 60 seconds. You can change this value by calling the following function.
+
+```swift
+HyperTrace.setScanningInterval(10) // set the interval every 10 seconds.
+```
+
+#### Duration of the scanning
+
+By default, the SDK will scan nearby devices for 10 seconds each time. You can change this value by calling the following function.
+
+```swift
+HyperTrace.setScanningDuration(5) // set the duration to 5 seconds.
+```
+
+#### Service ID
+
+To set the service ID, add a key in Info.plist called `TRACER_SVC_ID`.
+
+#### Characteristic ID
+
+To set the characteristic ID, add a key in Info.plist called `V2_CHARACTERISTIC_ID`.
+
+#### Organization
+
+To set the organization ID, add a key in Info.plist called `TRACER_ORG`.
+
 ### Data Upload
 
 To upload the encounters data, call the `upload` function.
