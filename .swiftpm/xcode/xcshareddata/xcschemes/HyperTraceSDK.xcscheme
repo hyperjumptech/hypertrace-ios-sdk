@@ -14,20 +14,6 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "HyperTraceSDK_HyperTraceSDK"
-               BuildableName = "HyperTraceSDK_HyperTraceSDK"
-               BlueprintName = "HyperTraceSDK_HyperTraceSDK"
-               ReferencedContainer = "container:">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "HyperTraceSDK"
                BuildableName = "HyperTraceSDK"
                BlueprintName = "HyperTraceSDK"
@@ -103,15 +89,6 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "HyperTraceSDK_HyperTraceSDK"
-            BuildableName = "HyperTraceSDK_HyperTraceSDK"
-            BlueprintName = "HyperTraceSDK_HyperTraceSDK"
-            ReferencedContainer = "container:">
-         </BuildableReference>
-      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
