@@ -116,14 +116,14 @@ final class HyperTraceSDKTests: XCTestCase {
     // create the PeripheralController instance that will be tested
     let peripheralController = PeripheralController(peripheralName: "test", queue: .main)
     
-    // create fake CBPeripheralManager
-    let manager = FakePeripheralManager()
+    // create Testable CBPeripheralManager
+    let manager = TestablePeripheralManager()
     
-    // create fake CBCharacteristic. We cannot call the init method because init function of CBCharacteristic is unavailable. The following is a workaround.
-    let characteristic = FakeCBCharacteristic.perform(NSSelectorFromString("new")).takeRetainedValue() as! FakeCBCharacteristic
-    let fakeCBUUID = FakeCBUUID()
-    fakeCBUUID._uuidString = "hello"
-    characteristic._uuid = fakeCBUUID
+    // create Testable CBCharacteristic. We cannot call the init method because init function of CBCharacteristic is unavailable. The following is a workaround.
+    let characteristic = TestableCBCharacteristic.perform(NSSelectorFromString("new")).takeRetainedValue() as! TestableCBCharacteristic
+    let TestableCBUUID = TestableCBUUID()
+    TestableCBUUID._uuidString = "hello"
+    characteristic._uuid = TestableCBUUID
     
     // create the data that will be received
     let data = """
@@ -136,8 +136,8 @@ final class HyperTraceSDKTests: XCTestCase {
       }
     """
     
-    // create fake CBATTRequest
-    let request = FakeCBATTRequest.perform(NSSelectorFromString("new")).takeRetainedValue() as! FakeCBATTRequest
+    // create Testable CBATTRequest
+    let request = TestableCBATTRequest.perform(NSSelectorFromString("new")).takeRetainedValue() as! TestableCBATTRequest
     request.value = data.data(using: .utf8)
     request._offset = 2
     request._characteristic = characteristic
@@ -162,5 +162,62 @@ final class HyperTraceSDKTests: XCTestCase {
     
     // wait until expectation is fulfilled
     wait(for: [expectation], timeout: 3.0)
+  }
+  
+  func testCentralControllerDidUpdateValue () {
+    let peripheral = TestableCBPeripheral.perform(NSSelectorFromString("new")).takeRetainedValue() as! TestableCBPeripheral
+    peripheral._uuid = UUID()
+    // need to add observer here to solve runtime exception when its instance is dealloced
+    peripheral.addObserver(peripheral, forKeyPath: "delegate", options: .new, context: nil)
+    
+    // create the data that will be received
+    let data = """
+      {
+        "mp": "iPhone 13",
+        "id": "abcd",
+        "o": "Hyperjump",
+        "v": 2
+      }
+    """
+    
+    // create Testable CBCharacteristic. We cannot call the init method because init function of CBCharacteristic is unavailable. The following is a workaround.
+    let characteristic = TestableCBCharacteristic.perform(NSSelectorFromString("new")).takeRetainedValue() as! TestableCBCharacteristic
+    let TestableCBUUID = TestableCBUUID()
+    TestableCBUUID._uuidString = "hello"
+    characteristic._uuid = TestableCBUUID
+    characteristic._value = data.data(using: .utf8)
+    
+    // create a central manager
+    let central = CBCentralManager.perform(NSSelectorFromString("new")).takeRetainedValue() as! CBCentralManager
+    
+    // create an advertisment data
+    let advertismentData = [
+      CBAdvertisementDataTxPowerLevelKey: 20
+    ]
+    
+    // create the central controller that will be tested
+    let centralController = CentralController(queue: .main)
+    
+    // let the central controller knows about a new peripheral
+    centralController.centralManager(central, didDiscover: peripheral, advertisementData: advertismentData, rssi: NSNumber(value: 10))
+    
+    // the function to test
+    centralController.peripheral(peripheral, didUpdateValueFor: characteristic, error: nil)
+    
+    // create expectation
+    let expectation = XCTestExpectation(description: "Wait for write")
+    
+    // wait until saving finishes
+    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+      // there should be 1 record in the last 3 secods if peripheralManager(:didReceiveWrite:) function succeeds
+      XCTAssertEqual(HyperTrace.countEncounters(inTheLast: 3, unit: .second), 1)
+      expectation.fulfill()
+    }
+    
+    // wait until expectation is fulfilled
+    wait(for: [expectation], timeout: 3.0)
+    
+    
+    
   }
 }

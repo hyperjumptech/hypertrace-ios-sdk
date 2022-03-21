@@ -10,9 +10,9 @@ import CoreBluetooth
 
 
 /**
- A subclass of CBPeripheralManager for helping with test
+ A subclass of CBPeripheralManager for helping with test.
  */
-class FakePeripheralManager: CBPeripheralManager {
+class TestablePeripheralManager: CBPeripheralManager {
   var _result: CBATTError.Code?
   var _request: CBATTRequest?
   
@@ -23,9 +23,9 @@ class FakePeripheralManager: CBPeripheralManager {
 }
 
 /**
- A subclass of CBUUID for helping with test
+ A subclass of CBUUID for helping with test.
  */
-class FakeCBUUID: CBUUID {
+class TestableCBUUID: CBUUID {
   var _uuidString: String = ""
   
   override var uuidString: String {
@@ -34,20 +34,25 @@ class FakeCBUUID: CBUUID {
 }
 
 /**
- A subclass of CBCharacteristic for helping with test
+ A subclass of CBCharacteristic for helping with test.
  */
-class FakeCBCharacteristic: CBCharacteristic {
-  var _uuid: FakeCBUUID = FakeCBUUID()
+class TestableCBCharacteristic: CBCharacteristic {
+  var _uuid: TestableCBUUID = TestableCBUUID()
+  var _value: Data?
   
   override var uuid: CBUUID {
     return _uuid
   }
+  
+  override var value: Data? {
+    return _value
+  }
 }
 
 /**
- A subclass of CBATTRequest for helping with test
+ A subclass of CBATTRequest for helping with test.
  */
-class FakeCBATTRequest: CBATTRequest {
+class TestableCBATTRequest: CBATTRequest {
   var _offset: Int = 1
   var _central: CBCentral
   var _characteristic: CBCharacteristic
@@ -62,5 +67,16 @@ class FakeCBATTRequest: CBATTRequest {
   
   override var characteristic: CBCharacteristic {
     return _characteristic
+  }
+}
+
+/**
+ A subclass of CBPeripheral for helping with test. 
+ */
+class TestableCBPeripheral: CBPeripheral {
+  var _uuid: UUID = UUID()
+  
+  override var identifier: UUID {
+    return _uuid
   }
 }
