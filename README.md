@@ -2,7 +2,7 @@
 
 ![HyperTraceSDK](https://github.com/hyperjumptech/hypertrace-ios-sdk/actions/workflows/test.yml/badge.svg)
 
-This repository contains the iOS SDK for the BlueTrace protocol.
+This repository contains the iOS SDK for the [BlueTrace protocol](https://bluetrace.io/static/bluetrace_whitepaper-938063656596c104632def383eb33b3c.pdf).
 
 ## Installation
 
