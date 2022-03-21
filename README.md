@@ -175,8 +175,7 @@ For a working example, see the [HyperTrace Sample app](https://github.com/hyperj
 The tests can be run either from the Xcode, or from the Terminal using the following command
 
 ```shell
-xcodebuild -scheme HyperTraceSDK test -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 12 Pro'
-
+xcodebuild -scheme HyperTraceSDK -enableCodeCoverage YES clean build test -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 12 Pro'
 ```
 
 ## License

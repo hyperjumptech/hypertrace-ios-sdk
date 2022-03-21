@@ -17,4 +17,5 @@ jobs:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
       - name: Test
         run: |
-          xcodebuild -scheme HyperTraceSDK test -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 12 Pro' | bundle exec xcpretty
+          rm -rf build && xcodebuild -scheme HyperTraceSDK -enableCodeCoverage YES -derivedDataPath build/  clean build test -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 12 Pro' | bundle exec xcpretty
+          xcrun xccov view --report ./build/Logs/Test/*.xcresult
