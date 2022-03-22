@@ -1,0 +1,28 @@
+name: Test the Package
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  test:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+      - name: Install swiftformat
+        run: |
+          brew update
+          brew install swiftformat
+      - name: Lint
+        run: |
+          swiftformat --lint Sources
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.6 # Not needed with a .ruby-version file
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+      - name: Test
+        run: |
+          rm -rf build && xcodebuild -scheme HyperTraceSDK -enableCodeCoverage YES -derivedDataPath build/  clean build test -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 12 Pro' | bundle exec xcpretty
+          xcrun xccov view --report --only-targets ./build/Logs/Test/*.xcresult
